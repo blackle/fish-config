@@ -1,9 +1,10 @@
 function fish_prompt --description "Write out the prompt"
     set -l last_status $status
+		set -l last_duration $CMD_DURATION
     set -l color_cwd
     set -l suffix
-    set -l blackle_color_time 666666
-    set -l blackle_color_git 666666
+    set -l blackle_color_time 666666\x1eyellow
+    set -l blackle_color_git 666666\x1eyellow
 
     switch $USER
         case root toor
@@ -19,19 +20,18 @@ function fish_prompt --description "Write out the prompt"
     end
 
     set_color $blackle_color_time
-    echo -n -s '┌ ' (date +"%a %b %d") (date +"%l:%M %p") ' ┐ '
+    echo -n -s '┌ ' (date +"%a %b %d") (date +"%l:%M %p")
+
+    if [ "$last_duration" != "0" ]
+    	echo -n " - "
+    	milli2user "$last_duration"
+    end
 
     set_color normal
 
-    if [ "$last_status" != "0" ]
-        set_color -b red white
-        echo -n "[$last_status]"
-        set_color normal
-    end
-
     set_color $blackle_color_time
     echo
-    echo -n '└ '
+    echo -n '├ '
 
     set_color normal
 
@@ -39,7 +39,7 @@ function fish_prompt --description "Write out the prompt"
     echo -n -s "$USER" @ (hostname) 
 
     set_color normal
-    echo -n -s (set_color $color_cwd) (prompt_pwd) (set_color normal) 
+    echo -n -s (set_color $color_cwd) ' ' (prompt_pwd) (set_color normal) 
 
     if git rev-parse --git-dir > /dev/null ^ /dev/null
         set git_master (and git rev-parse --abbrev-ref HEAD ^ /dev/null)
@@ -48,6 +48,20 @@ function fish_prompt --description "Write out the prompt"
         set_color normal
     end
 
-    echo -n "$suffix "
+
+    set_color $blackle_color_time
+    echo
+    echo -n '└ '
+
+
+    if [ "$last_status" != "0" ]
+        set_color -b red white
+        echo -n "($last_status)"
+        set_color normal
+        echo -n " "
+    end
+
+    echo -n "\$ "
+    set_color normal
 
 end
