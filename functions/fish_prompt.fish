@@ -5,8 +5,8 @@ function fish_prompt --description "Write out the prompt"
 
     set -l color_cwd
     set -l suffix
-    set -l blackle_color_time 666666\x1eyellow
-    set -l blackle_color_git 666666\x1eyellow
+    set -l blackle_color_time 888888\x1eyellow
+    set -l blackle_color_git 888888\x1eyellow
 
     switch $USER
         case root toor
@@ -30,7 +30,7 @@ function fish_prompt --description "Write out the prompt"
     set_color normal
 
     set_color $blackle_color_time
-    echo -n -s ' | ' (date +"%a %b %d") (date +"%l:%M %p")
+    echo -n -s ' | ' (date +"%a %b %d") ' ' (date +"%l:%M %p" | sed 's/^ //')
 
     if [ "$CMD_DURATION_PERSIST" != "0" -a "$CMD_DURATION_PERSIST" != "" ]
     	echo -n -s " | " (milli2user "$CMD_DURATION_PERSIST")
